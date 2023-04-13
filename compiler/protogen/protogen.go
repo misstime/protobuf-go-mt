@@ -546,6 +546,7 @@ type EnumValue struct {
 }
 
 func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc protoreflect.EnumValueDescriptor) *EnumValue {
+	/* @misstime 注释掉该段
 	// A top-level enum value's name is: EnumName_ValueName
 	// An enum value contained in a message is: MessageName_ValueName
 	//
@@ -555,6 +556,17 @@ func newEnumValue(gen *Plugin, f *File, message *Message, enum *Enum, desc proto
 		parentIdent = message.GoIdent
 	}
 	name := parentIdent.GoName + "_" + string(desc.Name())
+	*/
+
+	// @misstime begin
+	var name string
+	if message == nil {
+		name = string(desc.Name())
+	} else {
+		name = message.GoIdent.GoName + "_" + string(desc.Name())
+	}
+	// @misstime end
+
 	loc := enum.Location.appendPath(genid.EnumDescriptorProto_Value_field_number, desc.Index())
 	return &EnumValue{
 		Desc:     desc,

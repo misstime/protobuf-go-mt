@@ -25,8 +25,17 @@ protoc --go_out=plugins=grpc:. *.proto
 ```
 
 ```shell
+.\testdata\protoc-22.3-win64\bin\protoc.exe --go_out=. *.proto
+```
+
+### 自定义插件
+
+```shell
+cd 项目根目录
+go build -o .\testdata\protoc-gen-go-mt.exe .\cmd\protoc-gen-go\main.go
+
 cd testdata
-.\protoc-22.3-win64\bin\protoc.exe --go_out=. *.proto
+.\protoc-22.3-win64\bin\protoc.exe --go-mt_out=. *.proto
 ```
 
 
