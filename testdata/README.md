@@ -1,6 +1,19 @@
-tips:
+项目简介
+------
 
-- 所有测试均在 `/testdata` 中完成。
+本项目属于 protoc 的自定义 golang 插件。  
+
+本项目是对官方 golang 插件进行了少量的修改。官方插件地址 see：  
+
+- https://github.com/protocolbuffers/protobuf-go
+- https://pkg.go.dev/google.golang.org/protobuf
+
+相对于官方代码，本项目实现了以下两个功能：
+
+- 枚举类型编译规则的改变。例：Color_Color_Green -> Color_Green
+- 通过字段注释支持验证库 [golang validator](https://github.com/go-playground/validator) 
+
+具体变化参详 `/testdata` 内例子
 
 流程备忘
 -------
@@ -28,7 +41,10 @@ protoc --go_out=plugins=grpc:. *.proto
 .\testdata\protoc-22.3-win64\bin\protoc.exe --go_out=. *.proto
 ```
 
-### 自定义插件
+tips: 所有测试均在 `/testdata` 中完成。
+
+自定义插件
+---------
 
 ```shell
 cd 项目根目录

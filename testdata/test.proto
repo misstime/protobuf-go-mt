@@ -24,10 +24,12 @@ message ToyBricks {
 }
 
 // expect support [golang validator](github.com/go-playground/validator)
-message Request {
-  int64 id = 1;    //  唯一ID @{validate:"required"}
-  string name = 2; // 姓名 @{validate:"oneof=red green"}
-  int32 age = 3;   // 姓名 @{validate:"gt=10,lt=12"}
+message User {
+  int64 id = 1;
+  string name = 2; // 姓名
+  bool gender = 3; // 性别@{}
+  bool hobby = 4; // 爱好 @{ }
+  int32 age = 5; // 年龄 @{gt=10,lt=12}   end
 }
 
 

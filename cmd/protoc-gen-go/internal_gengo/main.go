@@ -11,6 +11,7 @@ import (
 	"go/parser"
 	"go/token"
 	"math"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -414,6 +415,12 @@ func genMessageField(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, fie
 			{"protobuf_val", fieldProtobufTagValue(val)},
 		}...)
 	}
+	// @misstime begin
+	validateTagValue := fieldValidateTagValue(field)
+	if validateTagValue != "" {
+		tags = append(tags, [2]string{"validate", strings.Trim(validateTagValue, " ")})
+	}
+	// @misstime end
 	if m.isTracked {
 		tags = append(tags, gotrackTags...)
 	}
@@ -426,6 +433,16 @@ func genMessageField(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, fie
 	leadingComments := appendDeprecationSuffix(field.Comments.Leading,
 		field.Desc.ParentFile(),
 		field.Desc.Options().(*descriptorpb.FieldOptions).GetDeprecated())
+	// @misstime begin
+	if validateTagValue != "" {
+		field.Comments.Trailing = protogen.Comments(strings.Replace(
+			string(field.Comments.Trailing),
+			"@{"+validateTagValue+"}",
+			"",
+			1,
+		))
+	}
+	// @misstime end
 	g.P(leadingComments,
 		name, " ", goType, tags,
 		trailingComment(field.Comments.Trailing))
@@ -722,6 +739,19 @@ func fieldDefaultValue(g *protogen.GeneratedFile, f *fileInfo, m *messageInfo, f
 func fieldJSONTagValue(field *protogen.Field) string {
 	return string(field.Desc.Name()) + ",omitempty"
 }
+
+// @misstime begin
+var regTagValidate = regexp.MustCompile(`.*?@\{(.+?)}.*`)
+
+func fieldValidateTagValue(field *protogen.Field) string {
+	comment := field.Comments.Trailing.String()
+	subs := regTagValidate.FindStringSubmatch(comment)
+	if len(subs) == 0 {
+		return ""
+	} else {
+		return subs[1]
+	}
+} // @misstime end
 
 func genExtensions(g *protogen.GeneratedFile, f *fileInfo) {
 	if len(f.allExtensions) == 0 {
